@@ -25,5 +25,5 @@
 		 }
 		 
 	},
-	"types": ["@pinia/nuxt"]
+	"types": ["@pinia/nuxt", "@nuxt/types"]
 }
