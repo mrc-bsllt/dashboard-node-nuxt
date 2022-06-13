@@ -87,7 +87,9 @@ module.exports = {
       transparent: 'transparent',
       current: 'currentColor',
       black: '#303030',
-      white: '#FFFFFF'
+      white: '#FFFFFF',
+      grey: '#BEBEBE',
+      gold: '#bca71d'
     }
   },
   variants: {
