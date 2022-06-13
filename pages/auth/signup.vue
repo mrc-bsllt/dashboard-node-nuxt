@@ -7,9 +7,11 @@ section(class="flex flex-row justify-center items-center flex-nowrap")
           | {{ input.label }}
         input(:type="input.type" 
               :id="'signup__' + input.field"
-              class="w-full bg-transparent border-b border-solid border-gold focus:outline-none"
+              class="w-full border-b border-solid focus:outline-none"
+              :class="!input.error ? 'bg-transparent border-gold' : 'bg-error-500 border-error'"
               v-model="newUser[input.field]"
-              autocomplete="on")
+              autocomplete="on"
+              @input="resetError(index)")
         small(v-if="input.error" class="error-message absolute top-[110%] left-0 text-10 text-error")
           | {{ input.error_message }}
       div.submit__wrapper.text-center
@@ -57,12 +59,19 @@ const newUser = ref<User>({
   confirm_password: ''
 })
 
+function resetError(index: number): void {
+  if(formInputs.value[index].error) {
+    formInputs.value[index].error = false
+    formInputs.value[index].error_message = ''
+  }
+}
+
 async function submittingSignup() {
   formInputs.value.forEach(input => {
     input.error = false
-    input.msg = ''
+    input.error_message = ''
   })
-  
+
   const username = newUser.value.username
   const email = newUser.value.email
   const password = newUser.value.password
