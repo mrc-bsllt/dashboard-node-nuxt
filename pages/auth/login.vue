@@ -5,7 +5,9 @@ section(class="flex flex-row justify-center items-center flex-nowrap")
       div(v-for="(input, index) in formInputs" :key="index" class="input__container mb-10")
         label(class="input__label mb-2 text-16 font-semibold")
           | {{ input.label }}
-        input(:type="input.type" class="w-full bg-transparent border-b border-solid border-gold focus:outline-none")
+        input(:type="input.type" 
+              class="w-full bg-transparent border-b border-solid border-gold focus:outline-none"
+              v-model="input.field")
       div.submit__wrapper.text-center
         button(type="submit" class="underline") Login
 </template>
@@ -14,8 +16,8 @@ section(class="flex flex-row justify-center items-center flex-nowrap")
 import type { User, FormInput } from '@/types/user'
 
 const formInputs: FormInput[] = [
-  { label: 'Email', type: 'email' },
-  { label: 'Password', type: 'password' }
+  { label: 'Email', type: 'email', field: 'email' },
+  { label: 'Password', type: 'password', field: 'password' }
 ]
 
 const user = ref<User>({

@@ -8,4 +8,7 @@ export interface User {
 export interface FormInput {
   label: String
   type: string
+  field: String
+  error: boolean
+  error_message: String
 }

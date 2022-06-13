@@ -1,6 +1,12 @@
 const User = require('../models/User')
+const { validationResult } = require('express-validator')
 
 const create_user = async (req, res, next) => {
+  const errors = validationResult(req)
+  if(!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() })
+  }
+
   const { username, email, password } = req.body
   const created_at = new Date()
   const updated_at = new Date()
