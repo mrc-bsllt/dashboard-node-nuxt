@@ -14,6 +14,11 @@ app.use((req, res, next) => {
   next()
 })
 
+// custom routes
+const authRoutes = require('./api/auth')
+
+app.use('/api/auth', authRoutes)
+
 mongoose.connect(process.env.MONGODB_URI).then(() => {
   app.listen(8080)
 }).catch(error => console.log(error))

@@ -24,9 +24,7 @@ const newUser = ref<User>({
   username: '',
   email: '',
   password: '',
-  confirm_password: '',
-  created_at: null,
-  updated_at: null
+  confirm_password: ''
 })
 
 function submittingSignup() {
