@@ -1,5 +1,8 @@
 const express = require('express')
+const { config } = require('dotenv')
+config()
 const bodyparser = require('body-parser')
+const { default: mongoose } = require('mongoose')
 
 const app = express()
 
@@ -11,4 +14,6 @@ app.use((req, res, next) => {
   next()
 })
 
-app.listen(8080)
+mongoose.connect(process.env.MONGODB_URI).then(() => {
+  app.listen(8080)
+}).catch(error => console.log(error))
