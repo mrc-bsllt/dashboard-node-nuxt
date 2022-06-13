@@ -12,3 +12,8 @@ export interface FormInput {
   error: boolean
   error_message: String
 }
+
+export interface ErrorInput {
+  param: String
+  msg: String
+}
