@@ -9,7 +9,7 @@ header#header(class="py-3 px-6 bg-black text-grey border-b border-solid border-g
         nuxt-link(to="/auth/signup")
           | Signup 
     li.pl-2(v-else)
-      nuxt-link(to="/auth/signup")
+      button(@click="logout")
         | logout 
 </template>
 
@@ -17,4 +17,10 @@ header#header(class="py-3 px-6 bg-black text-grey border-b border-solid border-g
 import { useHeader } from '@/store/header'
 const headerStore = useHeader()
 const { get_show_logout } = toRefs(headerStore)
+
+function logout() {
+  useCookie('token').value = undefined
+  useCookie('user_id').value = undefined
+  navigateTo('/auth/login')
+}
 </script>
