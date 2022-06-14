@@ -1,19 +1,19 @@
 export interface User {
-  username?: String,
-  email: String
-  password: String
-  confirm_password?: String
+  username?: string,
+  email: string
+  password: string
+  confirm_password?: string
 }
 
 export interface FormInput {
-  label: String
+  label: string
   type: string
-  field: String
+  field: string
   error: boolean
-  error_message: String
+  error_message: string
 }
 
 export interface ErrorInput {
-  param: String
-  msg: String
+  param: string
+  msg: string
 }

@@ -3,12 +3,12 @@ section(class="flex flex-row justify-center items-center flex-nowrap")
   div(class="form__container w-60 p-10 bg-white rounded-[15px] shadow-lg")
     form(@submit.prevent="submittingSignup" method="POST" novalidate)
       div(v-for="(input, index) in formInputs" :key="index" class="input__container relative mb-10")
-        label(:for="'signup__' + input.field" class="input__label mb-2 text-16 font-semibold")
+        label(:for="'signup__' + input.field" class="input__label mb-2 text-16 font-semibold" :class="{ 'text-error': input.error }")
           | {{ input.label }}
         input(:type="input.type" 
               :id="'signup__' + input.field"
               class="w-full border-b border-solid focus:outline-none"
-              :class="!input.error ? 'bg-transparent border-gold' : 'bg-error-500 border-error'"
+              :class="!input.error ? 'bg-transparent border-gold' : 'border-error'"
               v-model="newUser[input.field]"
               autocomplete="on"
               @input="resetError(index)")

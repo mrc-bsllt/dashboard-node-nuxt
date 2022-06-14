@@ -16,6 +16,8 @@ router.post('/signup', [
 
       if(user) {
         return Promise.reject('User already exist!')
+      } else {
+        return true
       }
     }),
   check('password', 'Invalid Password! Must contain at least 8 characters, 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol')
