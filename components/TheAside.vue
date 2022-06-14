@@ -1,3 +1,3 @@
 <template lang="pug">
-aside(class="w-[50px] h-full bg-black")
+aside(v-bind="$attrs" class="w-[50px] h-full bg-black")
 </template>

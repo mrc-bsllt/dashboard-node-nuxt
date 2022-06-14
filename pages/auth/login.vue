@@ -1,6 +1,6 @@
 <template lang="pug">
 section(class="flex flex-row justify-center items-center flex-nowrap")
-  div(class="form__container w-60 p-10 bg-white rounded-[15px] shadow-lg")
+  div(class="form__container w-100 sm:w-60 p-10 bg-white rounded-[15px] shadow-lg")
     form(@submit.prevent="submittingLogin" method="POST" novalidate)
       div(v-for="(input, index) in formInputs" :key="index" class="input__container relative mb-10")
         label(:for="'login__' + input.field" class="input__label mb-2 text-16 font-semibold" :class="{ 'text-error': input.error }")

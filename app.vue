@@ -1,9 +1,9 @@
 <template lang="pug">
 div#app(class="w-full h-screen overflow-hidden bg-grey")
   the-header(ref="header")
-  main#app-main(class="flex flex-row justify-start items-stretch flex-nowrap text-black" :style="{ height }")
-    the-aside
-    nuxt-page(class="p-10" :style="{ width }")
+  main#app-main(class="relative flex flex-row justify-start items-stretch flex-nowrap text-black" :style="{ height }")
+    the-aside(class="absolute top-0 left-0")
+    nuxt-page(class="ml-[50px] p-5 sm:p-10" :style="{ width }")
 </template>
 
 <script setup lang="ts">
