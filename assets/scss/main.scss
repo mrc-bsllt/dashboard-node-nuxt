@@ -6,3 +6,7 @@
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
 }
+
+svg {
+  @apply inline-block max-w-[25px] max-h-[25px] fill-grey;
+}
