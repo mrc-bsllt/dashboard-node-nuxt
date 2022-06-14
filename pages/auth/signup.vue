@@ -81,7 +81,6 @@ async function submittingSignup() {
     method: 'POST',
     body: { username, email, password, confirm_password },
     async onResponse({ request, response, options }) {
-      console.log(response._data.errors)
       const errors: ErrorInput[] | undefined = response._data.errors
       if(errors) {
         errors.forEach(error => {
@@ -90,6 +89,9 @@ async function submittingSignup() {
           formInputs.value[index].error = true
           formInputs.value[index].error_message = error.msg
         })
+      } else {
+        const router = useRouter()
+        router.push({ path: '/auth/login' })
       }
     }
   })

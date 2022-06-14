@@ -1,11 +1,12 @@
 const User = require('../models/User')
 const { validationResult } = require('express-validator')
 const bcrypt = require('bcrypt')
+const jsonToken = require('jsonwebtoken')
 
 const create_user = async (req, res, next) => {
   const errors = validationResult(req)
   if(!errors.isEmpty()) {
-    res.status(422).json({ errors: errors.array() })
+    return res.status(422).json({ errors: errors.array() })
   }
 
   try {
@@ -24,4 +25,23 @@ const create_user = async (req, res, next) => {
   }
 }
 
-module.exports = { create_user }
+const login = async (req, res, next) => {
+  const errors = validationResult(req)
+  if(!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
+
+  const { email } = req.body
+  try {
+    const user = await User.findOne({ email })
+    const user_id = user._id.toString()
+  
+    const token = jsonToken.sign({ user_id, email }, 'supersecretstring', { expiresIn: '4h' })
+  
+    res.status(200).json({ token, user_id, message: 'Successfully Authenticated!' })
+  } catch(error) {
+    res.status(500).json({ message: 'Server error!' })
+  }
+}
+
+module.exports = { create_user, login }

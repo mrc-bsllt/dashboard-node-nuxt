@@ -2,8 +2,9 @@ const express = require('express')
 const router = express.Router()
 const { check } = require('express-validator')
 const User = require('../models/User')
+const bcrypt = require('bcrypt')
 
-const { create_user } = require('../controllers/auth-controller')
+const { create_user, login } = require('../controllers/auth-controller')
 
 router.post('/signup', [
   check('username', 'Username must be min 5 characters long')
@@ -32,4 +33,31 @@ router.post('/signup', [
     }) 
 ], create_user)
 
+router.post('/login', [
+  check('email', 'Invalid Email!')
+    .isEmail().bail()
+    .custom(async (email) => {
+      const user = await User.findOne({ email })
+
+      if(!user) {
+        return Promise.reject('User does not exist!')
+      } else {
+        return true
+      }
+    }),
+  check('password', 'Invalid password!')
+    .custom(async (password, { req }) => {
+      const user = await User.findOne({ email: req.body.email })
+      if(!user) {
+        return Promise.reject()
+      }
+      
+      const is_valid = await bcrypt.compare(password, user.password)
+      if(!is_valid) {
+        return Promise.reject()
+      } else {
+        return true
+      }
+    }) 
+], login)
 module.exports = router
