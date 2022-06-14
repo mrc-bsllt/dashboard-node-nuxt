@@ -20,6 +20,10 @@ section(class="flex flex-row justify-center items-center flex-nowrap")
 
 <script setup lang="ts">
 import type { User, FormInput, ErrorInput } from '@/types/user'
+import { useHeader } from '@/store/header'
+
+const headerStore = useHeader()
+const { set_show_logout } = headerStore
 
 const formInputs = ref<FormInput[]>([
   { 
@@ -75,8 +79,8 @@ async function submittingLogin() {
         const { token, user_id } = response._data
         useCookie('token').value = token
         useCookie('user_id').value = user_id
-        const router = useRouter()
-        router.push({ path: '/' })
+        set_show_logout(true)
+        navigateTo('/')
       }
     }
   })

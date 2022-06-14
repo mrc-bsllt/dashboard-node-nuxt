@@ -5,9 +5,3 @@ main
   //-   | test
   //- div(v-if="showTestMessage") {{ getMessage }}
 </template>
-
-<script setup lang="ts">
-definePageMeta({
-  middleware: ["is-auth"]
-})
-</script>

@@ -90,8 +90,7 @@ async function submittingSignup() {
           formInputs.value[index].error_message = error.msg
         })
       } else {
-        const router = useRouter()
-        router.push({ path: '/auth/login' })
+        navigateTo('/auth/login')
       }
     }
   })
