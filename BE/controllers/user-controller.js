@@ -15,4 +15,11 @@ const update_image = async (req, res, next) => {
   res.status(201).json({ message: 'User updated!' })
 }
 
-module.exports = { update_image }
+const get_user = async (req, res, next) => {
+  const user_id = req.params.user_id
+  const user = await User.findById(user_id)
+
+  res.status(200).json(user)
+}
+
+module.exports = { update_image, get_user }

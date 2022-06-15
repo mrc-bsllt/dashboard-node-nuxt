@@ -14,8 +14,8 @@ section(class="section-header relative")
       template(v-else)
         li.px-2.flex.flex-row.justify-center.items-center.flex-nowrap 
           label(for="image-upload" class="flex flex-row justify-center items-center flex-nowrap relative w-[40px] h-[40px] rounded-[50%] bg-grey cursor-pointer overflow-hidden")
-            img(v-if="!updated_url" src="@/assets/svg/user.svg" alt="user-svg" width="30" height="30")
-            img(v-else :src="updated_url" alt="updated-image" width="40" height="40" class="absolute top-0 left-0 w-full h-full object-center object-cover")
+            img(v-if="!updated_url" :src="user_image" alt="user-svg" width="30" height="30" :class="{ 'cover_image': !user_image.includes('.svg') }")
+            img(v-else :src="updated_url" alt="updated-image" width="40" height="40" class="cover_image")
           input(type="file" id="image-upload" class="hidden" @change="fileSelected")
         li.pl-2
           button(@click="logout")
@@ -33,8 +33,22 @@ section(class="section-header relative")
 <script setup lang="ts">
 import { useHeader } from '@/store/header'
 import Icon from '@/components/commons/Icon.vue'
+import type { User } from '@/types/user'
 defineNuxtComponent({
   Icon
+})
+
+const { data, refresh } = await useAsyncData<User>('user', (): any => {
+  const user_id = useCookie('user_id')
+  if(user_id.value) {
+    return $fetch('http://localhost:8080/api/user/' + user_id.value)
+  } else {
+    return null
+  }
+})
+
+const user_image = computed(() => {
+  return data?.value?.image_path ? 'http://localhost:8080' + data.value.image_path : '../assets/svg/user.svg'
 })
 
 const headerStore = useHeader()
@@ -98,7 +112,6 @@ async function updateImage() {
         Authorization: 'Bearer ' + token.value
       },
       async onResponse({ request, response, options }) {
-        console.log(response._data)
         clearInput()
       }
     })
@@ -111,3 +124,9 @@ function logout() {
   navigateTo('/auth/login')
 }
 </script>
+
+<style scoped lang="scss">
+.cover_image {
+  @apply absolute top-0 left-0 w-full h-full object-center object-cover;
+}
+</style>

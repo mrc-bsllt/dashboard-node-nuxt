@@ -3,7 +3,7 @@ const path = require('path')
 const { config } = require('dotenv')
 config()
 const bodyparser = require('body-parser')
-const { default: mongoose } = require('mongoose')
+const mongoose = require('mongoose')
 
 const multer = require('multer') 
 const fileStorage = multer.diskStorage({
@@ -32,7 +32,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use(multer({ storage: fileStorage, fileFilter }).single('image_path'))
-app.use('/BE/storage/images', express.static(path.join(__dirname, 'BE/storage/images')))
+app.use('/BE/storage/images', express.static(path.join(__dirname, 'storage/images')))
 
 // custom routes
 const authRoutes = require('./api/auth')
