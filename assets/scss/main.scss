@@ -10,3 +10,23 @@
 svg {
   @apply inline-block max-w-[25px] max-h-[25px] fill-grey;
 }
+
+.btn {
+  @apply px-10 py-3 rounded-[5px] uppercase text-18 text-white font-semibold;
+
+  &-confirm {
+    @apply bg-green;
+  }
+  &-cancellation {
+    @apply bg-error;
+  }
+}
+
+// TRANSITION
+.slide-down-enter-active, .slide-down-leave-active {
+  transition: all 0.5s;
+  transform: translateY(0);
+}
+.slide-down-enter-from, .slide-down-leave-to {
+  transform: translateY(-100%);
+}
