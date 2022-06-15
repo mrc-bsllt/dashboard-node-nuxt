@@ -7,7 +7,10 @@ main
     div(class="weather__wrapper flex flex-row justify-start items-center flex-nowrap")
       p(class="text-22 font-semibold italic mr-10") {{ geolocation.meteo_description }}
       img(:src="geolocation.meteo_icon" alt="meteo-icon" width="100" height="100" class="max-w-[100px] max-h-[100px]")
-    p {{ geolocation }}
+    div(class="temp__wrapper flex flex-row justify-start items-center flex-nowrap mt-10")
+      img(src="@/assets/svg/thermometer.svg" alt="thermometer-icon" width="200" height="200" class="max-w-[200px] max-h-[400px] mr-10")
+      p(class="text-40 font-semibold") {{ geolocation.temperature }} °C
+  p(v-else) ...Loading
 </template>
 
 <script setup lang="ts">
@@ -29,7 +32,7 @@ const options = {
 }
 async function getCurrentGeolocationWeather(pos: any) {
   const { latitude, longitude } = pos.coords;
-  const data: any = await $fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=3c6416d0cf645797ec1ecd6ee38990af`)
+  const data: any = await $fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${latitude}&lon=${longitude}&appid=3c6416d0cf645797ec1ecd6ee38990af`)
   
   const city = data.name
   const meteo_description = data.weather[0].description
