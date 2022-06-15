@@ -10,9 +10,14 @@ header#header(class="relative py-4 px-6 bg-black text-grey border-b border-solid
       li.pl-2
         nuxt-link(to="/auth/signup")
           | Signup 
-    li.pl-2(v-else)
-      button(@click="logout")
-        | logout 
+    template(v-else)
+      li.px-2.flex.flex-row.justify-center.items-center.flex-nowrap 
+        label(for="image-upload" class="flex flex-row justify-center items-center flex-nowrap relative w-[40px] h-[40px] rounded-[50%] bg-grey cursor-pointer")
+          img(src="@/assets/svg/user.svg" alt="user-svg" width="30" height="30")
+        input(type="file" id="image-upload" class="hidden")
+      li.pl-2
+        button(@click="logout")
+          | logout 
 </template>
 
 <script setup lang="ts">

@@ -37,7 +37,8 @@ const login = async (req, res, next) => {
     const user_id = user._id.toString()
   
     const token = jsonToken.sign({ user_id, email }, 'supersecretstring', { expiresIn: '4h' })
-  
+    req.user = user
+    
     res.status(200).json({ token, user_id, message: 'Successfully Authenticated!' })
   } catch(error) {
     res.status(500).json({ message: 'Server error!' })
