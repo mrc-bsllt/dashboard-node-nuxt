@@ -13,8 +13,8 @@ section(class="section-header relative")
             | Signup 
       template(v-else)
         li.px-2.flex.flex-row.justify-center.items-center.flex-nowrap 
-          label(for="image-upload" class="flex flex-row justify-center items-center flex-nowrap relative w-[40px] h-[40px] rounded-[50%] bg-grey cursor-pointer overflow-hidden")
-            img(v-if="!updated_url" :src="user_image" alt="user-svg" width="30" height="30" :class="{ 'cover_image': !user_image.includes('.svg') }")
+          label(for="image-upload" class="flex flex-row justify-center items-center flex-nowrap relative w-[60px] h-[60px] rounded-[50%] bg-grey cursor-pointer overflow-hidden")
+            img(v-if="!updated_url" :src="user_image" alt="user-svg" width="50" height="50" :class="{ 'cover_image': !user_image.includes('.svg') }")
             img(v-else :src="updated_url" alt="updated-image" width="40" height="40" class="cover_image")
           input(type="file" id="image-upload" class="hidden" @change="fileSelected")
         li.pl-2
@@ -51,6 +51,11 @@ const user_image = computed(() => {
 
 const headerStore = useHeader()
 const { get_show_logout } = toRefs(headerStore)
+watch(get_show_logout, (newValue) => {
+  if(newValue) {
+    refresh()
+  }
+})
 
 const show_banner = ref<boolean>(false)
 const error_banner = ref<boolean>(false)
