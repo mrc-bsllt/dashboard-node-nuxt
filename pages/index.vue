@@ -2,7 +2,11 @@
 main 
   h1 BENTORNATO 
     span(class="underline italic") {{ user.username }}
-  section(v-if="geolocation")
+  section(v-if="geolocation" class="mt-20")
+    h2 {{ geolocation.city }} - {{ new Date().toLocaleDateString() }}
+    div(class="weather__wrapper flex flex-row justify-start items-center flex-nowrap")
+      p(class="text-22 font-semibold italic mr-10") {{ geolocation.meteo_description }}
+      img(:src="geolocation.meteo_icon" alt="meteo-icon" width="100" height="100" class="max-w-[100px] max-h-[100px]")
     p {{ geolocation }}
 </template>
 
@@ -26,10 +30,10 @@ const options = {
 async function getCurrentGeolocationWeather(pos: any) {
   const { latitude, longitude } = pos.coords;
   const data: any = await $fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=3c6416d0cf645797ec1ecd6ee38990af`)
-
+  
   const city = data.name
   const meteo_description = data.weather[0].description
-  const meteo_icon = 'https://openweathermap.org/img/w/' + data.weather[0].icon + 'png'
+  const meteo_icon = '../assets/svg/' + data.weather[0].main + '.svg'
   const temperature = data.main.temp
   geolocation.value = { city, meteo_description, meteo_icon, temperature }
 }
