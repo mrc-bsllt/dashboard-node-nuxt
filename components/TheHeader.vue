@@ -26,7 +26,7 @@ section(class="section-header relative")
         :class="error_banner ? 'bg-error' : 'bg-black'")
       p(v-if="error_banner" class="text-white text-16 font-semibold uppercase") Image must be png, jpg, jpeg or webp!
       template(v-else)
-        button(class="btn btn-confirm mx-3") Save
+        button(class="btn btn-confirm mx-3" @click="updateImage") Save
         button(class="btn btn-cancellation mx-3" @click="clearInput") Cancel
 </template>
 
@@ -75,6 +75,34 @@ function clearInput(): void {
   const input_file = document.getElementById('image-upload')! as HTMLInputElement
   input_file.value = ''
   show_banner.value = false
+}
+
+async function updateImage() {
+  const token = useCookie('token')
+  const user_id = useCookie('user_id')
+  if(!token.value || !user_id.value) {
+    return navigateTo('/auth/login')
+  }
+
+  const input_file = document.getElementById('image-upload')! as HTMLInputElement
+
+  if(input_file?.files?.length) {
+    const file = input_file.files[0]
+    const formData = new FormData()
+    formData.append('image_path', file)
+
+    await $fetch('http://localhost:8080/api/user/update-image/' + user_id.value, {
+      method: 'PUT',
+      body: formData,
+      headers: {
+        Authorization: 'Bearer ' + token.value
+      },
+      async onResponse({ request, response, options }) {
+        console.log(response._data)
+        clearInput()
+      }
+    })
+  }
 }
 
 function logout() {

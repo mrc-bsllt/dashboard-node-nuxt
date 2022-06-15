@@ -8,14 +8,14 @@ const { default: mongoose } = require('mongoose')
 const multer = require('multer') 
 const fileStorage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, 'storage/images')
+    callback(null, 'BE/storage/images')
   },
   filename: (req, file, callback) => {
     callback(null, new Date().toISOString() +  '-' + file.originalname)
   }
 }) 
 const fileFilter = (req, file, callback) => {
-  if(file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+  if(file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/webp') {
     callback(null, true)
   } else {
     callback(null, false)
@@ -32,12 +32,14 @@ app.use((req, res, next) => {
   next()
 })
 app.use(multer({ storage: fileStorage, fileFilter }).single('image_path'))
-app.use('/storage/images', express.static(path.join(__dirname, 'storage/images')))
+app.use('/BE/storage/images', express.static(path.join(__dirname, 'BE/storage/images')))
 
 // custom routes
 const authRoutes = require('./api/auth')
+const userRoutes = require('./api/user')
 
 app.use('/api/auth', authRoutes)
+app.use('/api', userRoutes)
 
 mongoose.connect(process.env.MONGODB_URI).then(() => {
   app.listen(8080)
