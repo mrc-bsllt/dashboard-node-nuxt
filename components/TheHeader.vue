@@ -6,10 +6,10 @@ section(class="section-header relative")
     ul(class="header__list w-full h-full flex flex-row justify-end items-center flex-nowrap") 
       template(v-if="!get_show_logout")
         li.px-2
-          nuxt-link(to="/auth/login")
+          nuxt-link(to="/auth/login" class="text-grey")
             | Login 
         li.pl-2
-          nuxt-link(to="/auth/signup")
+          nuxt-link(to="/auth/signup" class="text-grey")
             | Signup 
       template(v-else)
         li.px-2.flex.flex-row.justify-center.items-center.flex-nowrap 
@@ -18,7 +18,7 @@ section(class="section-header relative")
             img(v-else :src="updated_url" alt="updated-image" width="40" height="40" class="cover_image")
           input(type="file" id="image-upload" class="hidden" @change="fileSelected")
         li.pl-2
-          button(@click="logout")
+          button(@click="logout" class="text-grey")
             | logout 
   transition(name="slide-down" mode="out-in")
     div(v-if="show_banner" 
@@ -40,6 +40,7 @@ defineNuxtComponent({
 
 const { data, refresh } = await useAsyncData<User>('user', (): any => {
   const user_id = useCookie('user_id')
+
   if(user_id.value) {
     return $fetch('http://localhost:8080/api/user/' + user_id.value)
   }
