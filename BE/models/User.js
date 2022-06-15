@@ -14,6 +14,10 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
+  image_path: { 
+    type: String, 
+    required: false 
+  },
   created_at: { type: Date },
   updated_at: { type: Date }
 })
