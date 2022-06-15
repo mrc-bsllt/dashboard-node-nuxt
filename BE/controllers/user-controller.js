@@ -11,6 +11,7 @@ const update_image = async (req, res, next) => {
   }
 
   user.image_path = image_path
+  user.updated_at = new Date()
   await user.save()
   res.status(201).json({ message: 'User updated!' })
 }
