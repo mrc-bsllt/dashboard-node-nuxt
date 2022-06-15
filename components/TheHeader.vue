@@ -42,8 +42,6 @@ const { data, refresh } = await useAsyncData<User>('user', (): any => {
   const user_id = useCookie('user_id')
   if(user_id.value) {
     return $fetch('http://localhost:8080/api/user/' + user_id.value)
-  } else {
-    return null
   }
 })
 
@@ -112,6 +110,7 @@ async function updateImage() {
         Authorization: 'Bearer ' + token.value
       },
       async onResponse({ request, response, options }) {
+        await refresh()
         clearInput()
       }
     })
