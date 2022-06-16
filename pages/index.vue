@@ -1,5 +1,5 @@
 <template lang="pug">
-main
+main.relative
   h1 BENTORNATO 
     span(class="underline italic") {{ user.username }}
   section(v-if="geolocation" class="mt-20")
@@ -12,11 +12,16 @@ main
         img(src="@/assets/svg/thermometer.svg" alt="thermometer-icon" width="100" height="100" class="max-w-[100px] max-h-[100px] mr-10")
         p(class="text-40 font-semibold") {{ geolocation.temperature }} °C
     span(class="clock fixed bottom-[20px] right-[20px] text-22 italic") {{ clock }}
-  p(v-else) ...Loading
+  loader(v-else class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2")
 </template>
 
 <script setup lang="ts">
+import Loader from '@/components/commons/Loader.vue'
 import type { User } from '@/types/user'
+defineNuxtComponent({
+  Loader
+})
+
 const { data, refresh } = await useAsyncData<User>('index', (): any => {
   const user_id = useCookie('user_id')
 
