@@ -1,15 +1,17 @@
 <template lang="pug">
-main 
+main
   h1 BENTORNATO 
     span(class="underline italic") {{ user.username }}
   section(v-if="geolocation" class="mt-20")
     h2 {{ geolocation.city }} - {{ new Date().toLocaleDateString() }}
-    div(class="weather__wrapper flex flex-row justify-start items-center flex-nowrap")
-      p(class="text-22 font-semibold italic mr-10") {{ geolocation.meteo_description }}
-      img(:src="geolocation.meteo_icon" alt="meteo-icon" width="100" height="100" class="max-w-[100px] max-h-[100px]")
-    div(class="temp__wrapper flex flex-row justify-start items-center flex-nowrap mt-10")
-      img(src="@/assets/svg/thermometer.svg" alt="thermometer-icon" width="200" height="200" class="max-w-[200px] max-h-[400px] mr-10")
-      p(class="text-40 font-semibold") {{ geolocation.temperature }} °C
+    section(class="flex flex-row justify-between items-center flex-nowrap mt-10")
+      div(class="weather__wrapper flex flex-row justify-start items-center flex-nowrap")
+        p(class="text-22 font-semibold italic mr-10") {{ geolocation.meteo_description }}
+        img(:src="geolocation.meteo_icon" alt="meteo-icon" width="100" height="100" class="max-w-[100px] max-h-[100px]")
+      div(class="temp__wrapper flex flex-row justify-start items-center flex-nowrap")
+        img(src="@/assets/svg/thermometer.svg" alt="thermometer-icon" width="100" height="100" class="max-w-[100px] max-h-[100px] mr-10")
+        p(class="text-40 font-semibold") {{ geolocation.temperature }} °C
+    span(class="clock fixed bottom-[20px] right-[20px] text-22 italic") {{ clock }}
   p(v-else) ...Loading
 </template>
 
@@ -23,8 +25,9 @@ const { data, refresh } = await useAsyncData<User>('index', (): any => {
   }
 })
 const user = computed(() => data.value)
-const geolocation = ref<any>(null)
+const clock = ref<string>(new Date().toLocaleTimeString())
 
+const geolocation = ref<any>(null)
 const options = {
   enableHighAccuracy: true,
   timeout: 5000,
@@ -43,8 +46,10 @@ async function getCurrentGeolocationWeather(pos: any) {
 function errorGeolocation(err: any) {
   console.warn(`ERROR(${err.code}): ${err.message}`);
 }
-
 onBeforeMount(() => {
   navigator.geolocation.getCurrentPosition(getCurrentGeolocationWeather, errorGeolocation, options)
+  setInterval(() => {
+    clock.value = new Date().toLocaleTimeString()
+  }, 1000)
 })
 </script>
