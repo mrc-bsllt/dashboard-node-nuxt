@@ -4,14 +4,19 @@ main.relative
     span(class="underline italic") {{ user.username }}
   section(v-if="geolocation" class="mt-20")
     h2 {{ geolocation.city }} - {{ new Date().toLocaleDateString() }}
-    section(class="flex flex-row justify-between items-center flex-nowrap mt-10")
-      div(class="weather__wrapper flex flex-row justify-start items-center flex-nowrap")
+    section(class="flex flex-row justify-start items-center flex-nowrap mt-10")
+      div(class="weather__wrapper flex flex-row justify-start items-center flex-nowrap mr-20")
         p(class="text-22 font-semibold italic mr-10") {{ geolocation.meteo_description }}
         img(:src="geolocation.meteo_icon" alt="meteo-icon" width="100" height="100" class="max-w-[100px] max-h-[100px]")
       div(class="temp__wrapper flex flex-row justify-start items-center flex-nowrap")
         img(src="@/assets/svg/thermometer.svg" alt="thermometer-icon" width="100" height="100" class="max-w-[100px] max-h-[100px] mr-10")
         p(class="text-40 font-semibold") {{ geolocation.temperature }} °C
     span(class="clock fixed bottom-[20px] right-[20px] text-22 italic") {{ clock }}
+  section(v-else-if="error_geolocation" class="h-[90%] flex flex-col justify-center items-center flex-nowrap")
+    img(src="@/assets/svg/sad.svg" alt="sad-icon" width="200" height="200")
+    div(class="text-22")
+      span Sorry! We could not geolocate you, please 
+      button(class="font-semibold uppercase" @click="getGeolocation") try again!
   loader(v-else class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2")
 </template>
 
@@ -33,6 +38,7 @@ const user = computed(() => data.value)
 const clock = ref<string>(new Date().toLocaleTimeString())
 
 const geolocation = ref<any>(null)
+const error_geolocation = ref<boolean>(false)
 const options = {
   enableHighAccuracy: true,
   timeout: 5000,
@@ -49,11 +55,15 @@ async function getCurrentGeolocationWeather(pos: any) {
   geolocation.value = { city, meteo_description, meteo_icon, temperature }
 }
 function errorGeolocation(err: any) {
-  console.log('fired error')
-  console.warn(`ERROR(${err.code}): ${err.message}`);
+  error_geolocation.value = true
+}
+function getGeolocation() {
+  geolocation.value = null
+  error_geolocation.value = false
+  navigator.geolocation.getCurrentPosition(getCurrentGeolocationWeather, errorGeolocation, options)
 }
 onBeforeMount(() => {
-  navigator.geolocation.getCurrentPosition(getCurrentGeolocationWeather, errorGeolocation, options)
+  getGeolocation()
   setInterval(() => {
     clock.value = new Date().toLocaleTimeString()
   }, 1000)
