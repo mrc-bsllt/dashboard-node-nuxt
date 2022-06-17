@@ -49,6 +49,7 @@ async function getCurrentGeolocationWeather(pos: any) {
   geolocation.value = { city, meteo_description, meteo_icon, temperature }
 }
 function errorGeolocation(err: any) {
+  console.log('fired error')
   console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 onBeforeMount(() => {
