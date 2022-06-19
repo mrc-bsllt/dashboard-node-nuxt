@@ -16,7 +16,7 @@ const create_user = async (req, res, next) => {
 
     const hashed_password = await bcrypt.hash(password, 12)
 
-    const user = new User({ username, email, password: hashed_password, image_path: null, created_at, updated_at })
+    const user = new User({ username, email, password: hashed_password, image_path: '', created_at, updated_at })
     await user.save()
   
     res.status(201).json({ message: 'User created', user })

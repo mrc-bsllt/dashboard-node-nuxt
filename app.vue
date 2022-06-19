@@ -9,10 +9,39 @@ div#app(class="w-full h-screen overflow-hidden bg-grey")
 <script setup lang="ts">
 import TheHeader from '@/components/TheHeader.vue'
 import TheAside from '@/components/TheAside.vue'
+import { useUser } from '@/store/user'
+import type { User } from '@/types/user'
+import { useHeader } from '@/store/header'
+const { set_user } = useUser()
+const { get_refresh_data } = toRefs(useUser())
 
-defineNuxtComponent({
-  TheHeader,
-  TheAside
+const { data, refresh } = await useAsyncData<User>('index', (): any => {
+  const user_id = useCookie('user_id')
+
+  if(user_id.value) {
+    return $fetch('http://localhost:8080/api/user/' + user_id.value)
+  }
+})
+
+const { set_show_logout } = useHeader()
+const { get_show_logout } = toRefs(useHeader())
+
+if(data.value) {
+  set_user(data.value)
+  set_show_logout(true)
+}
+
+watch(get_show_logout, async (newValue) => {
+  if(newValue) {
+    await refresh()
+    set_user(data.value)
+  }
+})
+watch(get_refresh_data, async (newValue) => {
+  if(newValue) {ù
+    await refresh()
+    set_user(data.value)
+  }
 })
 
 const header = ref<typeof TheHeader | null>(null)

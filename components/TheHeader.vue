@@ -12,9 +12,14 @@ section(class="section-header relative")
           nuxt-link(to="/auth/signup" class="text-grey")
             | Signup 
       template(v-else)
-        li.px-2.flex.flex-row.justify-center.items-center.flex-nowrap 
+        li.px-2.flex.flex-row.justify-center.items-center.flex-nowrap
           label(for="image-upload" class="flex flex-row justify-center items-center flex-nowrap relative w-[60px] h-[60px] rounded-[50%] bg-grey cursor-pointer overflow-hidden")
-            img(v-if="!updated_url" :src="user_image" alt="user-svg" width="50" height="50" :class="{ 'cover_image': !user_image.includes('.svg') }")
+            img(v-if="!updated_url" 
+                :src="get_user.image_path" 
+                alt="user-svg" 
+                width="50" 
+                height="50" 
+                :class="{ 'cover_image': !get_user.image_path?.includes('.svg') }")
             img(v-else :src="updated_url" alt="updated-image" width="40" height="40" class="cover_image")
           input(type="file" id="image-upload" class="hidden" @change="fileSelected")
         li.pl-2
@@ -33,30 +38,16 @@ section(class="section-header relative")
 <script setup lang="ts">
 import { useHeader } from '@/store/header'
 import Icon from '@/components/commons/Icon.vue'
-import type { User } from '@/types/user'
+import { useUser } from '@/store/user'
 defineNuxtComponent({
   Icon
 })
 
-const { data, refresh } = await useAsyncData<User>('user', (): any => {
-  const user_id = useCookie('user_id')
+const { get_user } = toRefs(useUser())
+const { reset_user, toggle_refresh_data } = useUser()
 
-  if(user_id.value) {
-    return $fetch('http://localhost:8080/api/user/' + user_id.value)
-  }
-})
-
-const user_image = computed(() => {
-  return data?.value?.image_path ? 'http://localhost:8080' + data.value.image_path : '../assets/svg/user.svg'
-})
-
-const headerStore = useHeader()
-const { get_show_logout } = toRefs(headerStore)
-watch(get_show_logout, (newValue) => {
-  if(newValue) {
-    refresh()
-  }
-})
+const { get_show_logout } = toRefs(useHeader())
+const { set_show_logout } = useHeader()
 
 const show_banner = ref<boolean>(false)
 const error_banner = ref<boolean>(false)
@@ -116,7 +107,7 @@ async function updateImage() {
         Authorization: 'Bearer ' + token.value
       },
       async onResponse({ request, response, options }) {
-        await refresh()
+        toggle_refresh_data()
         clearInput()
       }
     })
@@ -124,8 +115,10 @@ async function updateImage() {
 }
 
 function logout() {
-  useCookie('token').value = undefined
-  useCookie('user_id').value = undefined
+  useCookie('token').value = ''
+  useCookie('user_id').value = ''
+  set_show_logout(false)
+  reset_user()
   navigateTo('/auth/login')
 }
 </script>

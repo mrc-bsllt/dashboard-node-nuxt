@@ -10,6 +10,6 @@ aside(v-bind="$attrs" class="min-w-[50px] h-full bg-black px-3 py-5")
 import type { Item } from '@/types/aside'
 
 const items = ref<Item[]>([
-  { label: 'Todos', icon: 'todo', path: '/todo' }
+  { label: 'Todos', icon: 'todo', path: '/' }
 ])
 </script>

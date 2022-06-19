@@ -9,7 +9,7 @@ section(class="flex flex-row justify-center items-center flex-nowrap")
               :id="'login__' + input.field"
               class="w-full border-b border-solid focus:outline-none"
               :class="!input.error ? 'bg-transparent border-gold' : 'border-error'"
-              v-model="user[input.field]"
+              v-model="(user[input.field])"
               autocomplete="on"
               @input="resetError(index)")
         small(v-if="input.error" class="error-message absolute top-[110%] left-0 text-10 text-error")
@@ -22,8 +22,7 @@ section(class="flex flex-row justify-center items-center flex-nowrap")
 import type { User, FormInput, ErrorInput } from '@/types/user'
 import { useHeader } from '@/store/header'
 
-const headerStore = useHeader()
-const { set_show_logout } = headerStore
+const { set_show_logout } = useHeader()
 
 const formInputs = ref<FormInput[]>([
   { 

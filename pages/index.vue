@@ -1,7 +1,7 @@
 <template lang="pug">
 main.relative
   h1 BENTORNATO 
-    span(class="underline italic") {{ user.username }}
+    span(class="underline italic") {{ get_user.username }}
   section(v-if="geolocation" class="mt-20")
     h2 {{ geolocation.city }} - {{ new Date().toLocaleDateString() }}
     section(class="flex flex-row justify-start items-center flex-nowrap mt-10")
@@ -22,19 +22,12 @@ main.relative
 
 <script setup lang="ts">
 import Loader from '@/components/commons/Loader.vue'
-import type { User } from '@/types/user'
+import { useUser } from '@/store/user'
 defineNuxtComponent({
   Loader
 })
 
-const { data, refresh } = await useAsyncData<User>('index', (): any => {
-  const user_id = useCookie('user_id')
-
-  if(user_id.value) {
-    return $fetch('http://localhost:8080/api/user/' + user_id.value)
-  }
-})
-const user = computed(() => data.value)
+const { get_user } = toRefs(useUser())
 const clock = ref<string>(new Date().toLocaleTimeString())
 
 const geolocation = ref<any>(null)

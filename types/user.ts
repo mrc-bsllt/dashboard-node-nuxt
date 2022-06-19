@@ -1,9 +1,9 @@
 export interface User {
   _id?: string
   username?: string
-  image_path?: string | null
-  email: string
-  password: string
+  image_path?: string
+  email?: string
+  password?: string
   confirm_password?: string
 }
 
