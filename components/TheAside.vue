@@ -8,8 +8,11 @@ aside(v-bind="$attrs" class="min-w-[50px] h-full bg-black px-3 py-5")
 
 <script setup lang="ts">
 import type { Item } from '@/types/aside'
+import { useUser } from '@/store/user'
+
+const { get_user } = toRefs(useUser())
 
 const items = ref<Item[]>([
-  { label: 'Todos', icon: 'todo', path: '/' }
+  { label: 'Todos', icon: 'todo', path: get_user.value.username ? `/${get_user.value.username}/todos` : '/' }
 ])
 </script>

@@ -11,7 +11,6 @@ main.relative
       div(class="temp__wrapper flex flex-row justify-start items-center flex-nowrap")
         img(src="@/assets/svg/thermometer.svg" alt="thermometer-icon" width="100" height="100" class="max-w-[100px] max-h-[100px] mr-10")
         p(class="text-40 font-semibold") {{ geolocation.temperature }} °C
-    span(class="clock fixed bottom-[20px] right-[20px] text-22 italic") {{ clock }}
   section(v-else-if="error_geolocation" class="h-[90%] flex flex-col justify-center items-center flex-nowrap")
     img(src="@/assets/svg/sad.svg" alt="sad-icon" width="200" height="200")
     div(class="text-22")
@@ -28,7 +27,6 @@ defineNuxtComponent({
 })
 
 const { get_user } = toRefs(useUser())
-const clock = ref<string>(new Date().toLocaleTimeString())
 
 const geolocation = ref<any>(null)
 const error_geolocation = ref<boolean>(false)
@@ -56,9 +54,8 @@ function getGeolocation() {
   navigator.geolocation.getCurrentPosition(getCurrentGeolocationWeather, errorGeolocation, options)
 }
 onBeforeMount(() => {
-  getGeolocation()
-  setInterval(() => {
-    clock.value = new Date().toLocaleTimeString()
-  }, 1000)
+  if(!geolocation.value) {
+    getGeolocation()
+  }
 })
 </script>

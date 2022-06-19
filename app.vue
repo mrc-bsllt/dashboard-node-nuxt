@@ -4,6 +4,7 @@ div#app(class="w-full h-screen overflow-hidden bg-grey")
   main#app-main(class="relative flex flex-row justify-start items-stretch flex-nowrap text-black" :style="{ height }")
     the-aside(ref="aside" class="absolute top-0 left-0")
     nuxt-page(class="p-5 sm:p-10" :style="{ width, marginLeft }")
+    span(class="clock fixed bottom-[20px] right-[20px] text-22 italic") {{ clock }}
 </template>
 
 <script setup lang="ts">
@@ -38,7 +39,7 @@ watch(get_show_logout, async (newValue) => {
   }
 })
 watch(get_refresh_data, async (newValue) => {
-  if(newValue) {ù
+  if(newValue) {
     await refresh()
     set_user(data.value)
   }
@@ -59,6 +60,13 @@ function setMainWidth(el: typeof TheAside | null): void {
   marginLeft.value = asideWidth
   width.value = `calc(100% - ${asideWidth})`
 }
+
+const clock = ref<string>(new Date().toLocaleTimeString())
+onBeforeMount(() => {
+  setInterval(() => {
+    clock.value = new Date().toLocaleTimeString()
+  }, 1000)
+})
 
 onMounted(() => {
   setMainHeight(header.value)
