@@ -18,9 +18,14 @@ const { get_refresh_data } = toRefs(useUser())
 
 const { data, refresh } = await useAsyncData<User>('index', (): any => {
   const user_id = useCookie('user_id')
+  const token = useCookie('token')
 
   if(user_id.value) {
-    return $fetch('http://localhost:8080/api/user/' + user_id.value)
+    return $fetch('http://localhost:8080/api/user/' + user_id.value, {
+      headers: {
+        Authorization: 'Bearer ' + token.value
+      }
+    })
   }
 })
 
