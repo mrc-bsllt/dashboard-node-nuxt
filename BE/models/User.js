@@ -18,6 +18,10 @@ const userSchema = new Schema({
     type: String, 
     required: false 
   },
+  todos: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Todo'
+  }],
   created_at: { type: Date },
   updated_at: { type: Date }
 })

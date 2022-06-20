@@ -16,7 +16,7 @@ const create_user = async (req, res, next) => {
 
     const hashed_password = await bcrypt.hash(password, 12)
 
-    const user = new User({ username, email, password: hashed_password, image_path: '', created_at, updated_at })
+    const user = new User({ username, email, password: hashed_password, image_path: '', todos: [], created_at, updated_at })
     await user.save()
   
     res.status(201).json({ message: 'User created', user })
@@ -38,7 +38,6 @@ const login = async (req, res, next) => {
   
     const token = jsonToken.sign({ user_id, email }, 'supersecretstring', { expiresIn: '4h' })
     req.user_id = user._id
-    
     res.status(200).json({ token, user_id, message: 'Successfully Authenticated!' })
   } catch(error) {
     res.status(500).json({ message: 'Server error!' })

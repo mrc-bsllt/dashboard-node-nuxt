@@ -37,9 +37,11 @@ app.use('/BE/storage/images', express.static(path.join(__dirname, 'storage/image
 // custom routes
 const authRoutes = require('./api/auth')
 const userRoutes = require('./api/user')
+const todosRoutes = require('./api/todos')
 
 app.use('/api/auth', authRoutes)
 app.use('/api', userRoutes)
+app.use('/api', todosRoutes)
 
 mongoose.connect(process.env.MONGODB_URI).then(() => {
   app.listen(8080)
