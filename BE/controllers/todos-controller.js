@@ -17,4 +17,11 @@ const add_todo = async (req, res, next) => {
   res.status(201).json({ message: 'Todo created' })
 }
 
-module.exports = { add_todo }
+const get_todos = async (req, res, next) => {
+  const user_id = req.user_id
+  const { todos } = await User.findById(user_id).populate('todos')
+  
+  res.status(200).json(todos)
+}
+
+module.exports = { add_todo, get_todos }

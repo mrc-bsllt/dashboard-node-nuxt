@@ -20,7 +20,10 @@ svg {
 }
 
 .btn {
-  @apply px-10 py-3 rounded-[5px] uppercase text-18 text-white font-semibold;
+  @apply px-10 py-3 rounded-[5px] uppercase text-18 text-white font-semibold transition-opacity;
+  &[disabled] {
+    @apply opacity-30;
+  }
 
   &-confirm {
     @apply bg-green;
