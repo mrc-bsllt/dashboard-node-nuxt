@@ -5,7 +5,7 @@ main(id="todos" class="relative")
   section(class="todos__wrapper")
     form(method="POST" novalidate)
       ul(id="todos-list" class="pl-10")
-        li(v-for="(todo, index) in todos" :key="index" class="todo flex flex-row justify-start items-center flex-nowrap" :class="{ 'mt-5': index > 0 }" )
+        li(v-for="(todo, index) in allTodos" :key="index" class="todo flex flex-row justify-start items-center flex-nowrap" :class="{ 'mt-5': index > 0 }" )
           input(type="text" 
                 :value="todo.content" 
                 class="todo-input w-80 bg-transparent border-b border-solid border-gold italic focus:outline-none"
@@ -28,13 +28,13 @@ const { data, refresh } = await useAsyncData<Todo[]>('todos', () => {
   })
 })
 
-const addedTodos = ref<Todo[]>([])
+let addedTodos = ref<Todo[]>([])
 const todos = computed(() => {
-  const todos = data.value.map(el => {
+  return data.value.map(el => {
     return { ...el }
   })
-  return todos.concat(addedTodos.value)
 })
+const allTodos = computed(() => todos.value.concat(addedTodos.value))
 
 watch(() => addedTodos.value.length, () => {
   setTimeout(() => {
@@ -45,12 +45,12 @@ watch(() => addedTodos.value.length, () => {
   }, 100)
 })
 
-const updatedTodos = ref<number[]>([])
-const deletedTodos = ref<number[]>([])
+let updatedTodos = ref<number[]>([])
+let deletedTodos = ref<number[]>([])
 
 function updateTodo(event: Event, index: number): void {
   const value = (event.target as HTMLInputElement).value
-  todos.value[index].content = value
+  allTodos.value[index].content = value
 
   if(!updatedTodos.value.includes(index)) {
     updatedTodos.value.push(index)
@@ -58,7 +58,7 @@ function updateTodo(event: Event, index: number): void {
   if(index <= data.value.length - 1) {
     const isSameValue = data.value[index].content === value
     if(isSameValue) {
-      updatedTodos.value.splice(index, 1)
+      updatedTodos.value = updatedTodos.value.filter(el => el !== index)
     }
   }
 }
@@ -69,12 +69,12 @@ function addTodo(): void {
 }
 
 function deleteTodo(index: number) {
-  const addedIndex = index - data.value.length - 1
+  const addedIndex = index - data.value.length
 
   if(index > data.value.length - 1) {
     addedTodos.value.splice(addedIndex, 1)
     if(updatedTodos.value.includes(index)) {
-      updatedTodos.value.splice(index, 1)
+      updatedTodos.value = updatedTodos.value.filter(el => el !== index)
     }
   }
 }
