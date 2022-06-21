@@ -5,3 +5,8 @@ export interface Todo {
   created_at?: Date
   updated_at?: Date
 }
+
+export interface UpdatedTodos {
+  content: number[]
+  done: number[]
+}

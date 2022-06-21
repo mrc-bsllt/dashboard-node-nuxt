@@ -1,23 +1,29 @@
 <template lang="pug">
 main(id="todos" class="relative")
   div(class="icon__wrapper")
-    img(src="@/assets/svg/plus.svg" @click="addTodo")
+    img(src="@/assets/svg/plus.svg" class="cursor-pointer" @click="addTodo")
   section(class="todos__wrapper")
     form(method="POST" novalidate)
       ul(id="todos-list" class="pl-10")
         li(v-for="(todo, index) in allTodos" :key="index" class="todo flex flex-row justify-start items-center flex-nowrap" :class="{ 'mt-5': index > 0 }" )
+          label(:for="'todo-' + index" class="relative w-[15px] h-[15px] mr-3")
+            input(type="checkbox" :id="'todo-' + index" class="todo-checkbox hidden" :value="todo.done" v-model="todo.done" @input="($event) => updateTodo($event, index, true)")
+            div(class="fake-checkbox absolute top-1/2 left-0 -translate-y-1/2 w-full h-full border border-solid border-black bg-none bg-center bg-contain")
           input(type="text" 
                 :value="todo.content" 
                 class="todo-input w-80 bg-transparent border-b border-solid border-gold italic focus:outline-none"
+                :class="{ 'line-through	': todo.done }"
                 @input="($event) => updateTodo($event, index)")
           img(src="@/assets/svg/basket.svg" alt="basket-icon" width="20" height="20" class="mx-2 cursor-pointer" @click="deleteTodo(index)")
       
-      button(type="submit" class="btn btn-confirm absolute top-[20px] right-[20px]" :disabled="!updatedTodos.length && !deletedTodos.length && !addedTodos.length")
+      button(type="submit" 
+            class="btn btn-confirm absolute top-[20px] right-[20px]" 
+            :disabled="!updatedTodos.content.length && !updatedTodos.done.length && !deletedTodos.length && !addedTodos.length")
         | Save
 </template>
 
 <script setup lang="ts">
-import type { Todo } from '@/types/todos'
+import type { Todo, UpdatedTodos } from '@/types/todos'
 
 const { data, refresh } = await useAsyncData<Todo[]>('todos', () => {
   const token = useCookie('token')
@@ -45,20 +51,29 @@ watch(() => addedTodos.value.length, () => {
   }, 100)
 })
 
-let updatedTodos = ref<number[]>([])
+let updatedTodos = ref<UpdatedTodos>({ content: [], done: [] })
 let deletedTodos = ref<number[]>([])
 
-function updateTodo(event: Event, index: number): void {
+function updateTodo(event: Event, index: number, isCheckbox: boolean = false): void {
   const value = (event.target as HTMLInputElement).value
-  allTodos.value[index].content = value
-
-  if(!updatedTodos.value.includes(index)) {
-    updatedTodos.value.push(index)
-  }
-  if(index <= data.value.length - 1) {
-    const isSameValue = data.value[index].content === value
-    if(isSameValue) {
-      updatedTodos.value = updatedTodos.value.filter(el => el !== index)
+  
+  if(!isCheckbox) {
+    allTodos.value[index].content = value
+  
+    if(!updatedTodos.value.content.includes(index)) {
+      updatedTodos.value.content.push(index)
+    }
+    if(index <= data.value.length - 1) {
+      const isSameValue = data.value[index].content === value
+      if(isSameValue) {
+        updatedTodos.value.content = updatedTodos.value.content.filter(el => el !== index)
+      }
+    }
+  } else {
+    if(value === 'false') {
+      updatedTodos.value.done.push(index)
+    } else {
+      updatedTodos.value.done = updatedTodos.value.done.filter(el => el !== index)
     }
   }
 }
@@ -73,8 +88,9 @@ function deleteTodo(index: number) {
 
   if(index > data.value.length - 1) {
     addedTodos.value.splice(addedIndex, 1)
-    if(updatedTodos.value.includes(index)) {
-      updatedTodos.value = updatedTodos.value.filter(el => el !== index)
+    if(updatedTodos.value.content.includes(index) || updatedTodos.value.done.includes(index)) {
+      updatedTodos.value.content = updatedTodos.value.content.filter(el => el !== index)
+      updatedTodos.value.done = updatedTodos.value.done.filter(el => el !== index)
     }
   }
 }
@@ -93,3 +109,11 @@ async function submitForm() {
   })
 }
 </script>
+
+<style scoped lang="scss">
+.todo-checkbox:checked {
+  & + .fake-checkbox {
+    background-image: url('@/assets/svg/check.svg');
+  }
+}
+</style>
