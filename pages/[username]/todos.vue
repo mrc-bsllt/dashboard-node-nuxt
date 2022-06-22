@@ -118,6 +118,8 @@ async function submitForm() {
     async onResponse({ response }) {
       addedTodos.value = []
       deletedTodos.value = []
+      updatedTodos.value.content = []
+      updatedTodos.value.done = []
       console.log(response._data)
       refresh()
     }
