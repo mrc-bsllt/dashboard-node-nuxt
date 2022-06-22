@@ -1,21 +1,6 @@
 const User = require('../models/User')
 const Todo = require('../models/Todo')
-
-const add_todo = async (req, res, next) => {
-  const user_id = req.user_id
-  const { content } = req.body
-  const done = false
-  const created_at = new Date()
-  const updated_at = new Date()
-  const user = await User.findById(user_id)
-
-  const todo = new Todo({ content, done, user_id, created_at, updated_at })
-  user.todos.push(todo._id)
-
-  await Promise.all([todo.save(), user.save()])
-  
-  res.status(201).json({ message: 'Todo created' })
-}
+let responses = []
 
 const get_todos = async (req, res, next) => {
   const user_id = req.user_id
@@ -24,4 +9,47 @@ const get_todos = async (req, res, next) => {
   res.status(200).json(todos)
 }
 
-module.exports = { add_todo, get_todos }
+const add_todos = async (req, res, next) => {
+  responses = []
+  const user_id = req.user_id
+  const { added_todos } = req.body
+  
+  if(added_todos.length) {
+    const user = await User.findById(user_id)
+    await Promise.all(added_todos.map(async todo => {
+      const { content, done } = todo
+      const newTodo = new Todo({ content, done, user_id, created_at: new Date(), updated_at: new Date() })
+      user.todos.push(newTodo._id)
+      await newTodo.save()
+    }))
+    await user.save()
+    
+    responses.push({ message: 'Todos created' })
+  } else {
+    responses.push({ message: 'Nothing to add' })
+  }
+
+  next()
+}
+
+const delete_todos = async (req, res, next) => {
+  const user_id = req.user_id
+  const { deleted_todos } = req.body
+  const ids = deleted_todos.map(todo => todo._id)
+  console.log(ids)
+  if(deleted_todos.length) {
+    const user = await User.findById(user_id)
+    user.todos = user.todos.filter(todo_id => {
+      // console.log(!ids.includes(todo_id.toString()))
+      return !ids.includes(todo_id.toString())
+    })
+    
+    await Promise.all([user.save(), Todo.deleteMany({ _id: { $in: ids }})])
+  } else {
+    responses.push({ message: 'Nothing to delete' })
+  }
+
+  res.status(201).json(responses)
+}
+
+module.exports = { add_todos, get_todos, delete_todos }

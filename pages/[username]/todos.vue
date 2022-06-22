@@ -3,18 +3,22 @@ main(id="todos" class="relative")
   div(class="icon__wrapper")
     img(src="@/assets/svg/plus.svg" class="cursor-pointer" @click="addTodo")
   section(class="todos__wrapper")
-    form(method="POST" novalidate)
+    form(method="POST" @submit.prevent="submitForm" novalidate)
       ul(id="todos-list" class="pl-10")
-        li(v-for="(todo, index) in allTodos" :key="index" class="todo flex flex-row justify-start items-center flex-nowrap" :class="{ 'mt-5': index > 0 }" )
+        li(v-for="(todo, index) in allTodos" 
+          :key="index" 
+          class="todo flex flex-row justify-start items-center flex-nowrap" 
+          :class="{ 'mt-5': index > 0 }, { 'opacity-todo': deletedTodos.includes(index) }")
           label(:for="'todo-' + index" class="relative w-[15px] h-[15px] mr-3")
             input(type="checkbox" :id="'todo-' + index" class="todo-checkbox hidden" :value="todo.done" v-model="todo.done" @input="($event) => updateTodo($event, index, true)")
             div(class="fake-checkbox absolute top-1/2 left-0 -translate-y-1/2 w-full h-full border border-solid border-black bg-none bg-center bg-contain")
           input(type="text" 
                 :value="todo.content" 
                 class="todo-input w-80 bg-transparent border-b border-solid border-gold italic focus:outline-none"
-                :class="{ 'line-through	': todo.done }"
+                :class="{ 'line-through	': todo.done || deletedTodos.includes(index) }"
                 @input="($event) => updateTodo($event, index)")
-          img(src="@/assets/svg/basket.svg" alt="basket-icon" width="20" height="20" class="mx-2 cursor-pointer" @click="deleteTodo(index)")
+          img(v-if="!deletedTodos.includes(index)" src="@/assets/svg/basket.svg" alt="basket-icon" width="20" height="20" class="mx-2 cursor-pointer" @click="deleteTodo(index)")
+          img(v-else src="@/assets/svg/restore.svg" alt="restore-icon" width="20" height="20" class="mx-2 cursor-pointer" @click="restoreTodo(index)")
       
       button(type="submit" 
             class="btn btn-confirm absolute top-[20px] right-[20px]" 
@@ -70,7 +74,7 @@ function updateTodo(event: Event, index: number, isCheckbox: boolean = false): v
       }
     }
   } else {
-    if(value === 'false') {
+    if(!updatedTodos.value.done.includes(index)) {
       updatedTodos.value.done.push(index)
     } else {
       updatedTodos.value.done = updatedTodos.value.done.filter(el => el !== index)
@@ -92,19 +96,30 @@ function deleteTodo(index: number) {
       updatedTodos.value.content = updatedTodos.value.content.filter(el => el !== index)
       updatedTodos.value.done = updatedTodos.value.done.filter(el => el !== index)
     }
+  } else {
+    deletedTodos.value.push(index)
   }
+}
+function restoreTodo(index: number): void {
+  deletedTodos.value = deletedTodos.value.filter(el => el !== index)
 }
 
 async function submitForm() {
   const token = useCookie('token')
-  await $fetch('http://localhost:8080/api/todo', {
+  const added_todos = allTodos.value.slice(data.value.length)
+  const deleted_todos = data.value.filter((todo, index) => deletedTodos.value.includes(index))
+  
+  await $fetch('http://localhost:8080/api/todos', {
     method: 'POST',
     headers: {
       Authorization: 'Bearer ' + token.value
     },
-    body: { content: 'Prima todo' },
+    body: { added_todos, deleted_todos },
     async onResponse({ response }) {
-      console.log(response)
+      addedTodos.value = []
+      deletedTodos.value = []
+      console.log(response._data)
+      refresh()
     }
   })
 }
@@ -114,6 +129,12 @@ async function submitForm() {
 .todo-checkbox:checked {
   & + .fake-checkbox {
     background-image: url('@/assets/svg/check.svg');
+  }
+}
+
+.opacity-todo {
+  label, input {
+    opacity: 0.3;
   }
 }
 </style>
