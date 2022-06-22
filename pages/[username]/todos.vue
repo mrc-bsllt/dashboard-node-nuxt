@@ -120,7 +120,6 @@ async function submitForm() {
       deletedTodos.value = []
       updatedTodos.value.content = []
       updatedTodos.value.done = []
-      console.log(response._data)
       refresh()
     }
   })

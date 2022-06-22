@@ -36,13 +36,10 @@ const delete_todos = async (req, res, next) => {
   const user_id = req.user_id
   const { deleted_todos } = req.body
   const ids = deleted_todos.map(todo => todo._id)
-  console.log(ids)
+  
   if(deleted_todos.length) {
     const user = await User.findById(user_id)
-    user.todos = user.todos.filter(todo_id => {
-      // console.log(!ids.includes(todo_id.toString()))
-      return !ids.includes(todo_id.toString())
-    })
+    user.todos = user.todos.filter(todo_id => !ids.includes(todo_id.toString()))
     
     await Promise.all([user.save(), Todo.deleteMany({ _id: { $in: ids }})])
   } else {
