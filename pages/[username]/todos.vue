@@ -60,7 +60,7 @@ let deletedTodos = ref<number[]>([])
 
 function updateTodo(event: Event, index: number, isCheckbox: boolean = false): void {
   const value = (event.target as HTMLInputElement).value
-  
+
   if(!isCheckbox) {
     allTodos.value[index].content = value
   
@@ -107,6 +107,11 @@ function restoreTodo(index: number): void {
 async function submitForm() {
   const token = useCookie('token')
   const added_todos = allTodos.value.slice(data.value.length)
+
+  const update_indexes = [ ...new Set(updatedTodos.value.content.concat(updatedTodos.value.done)) ]
+  const filtered_update_indexes = update_indexes.filter(i => i <= data.value.length - 1)
+  const updated_todos = allTodos.value.filter((todo, index) => filtered_update_indexes.includes(index))
+  
   const deleted_todos = data.value.filter((todo, index) => deletedTodos.value.includes(index))
   
   await $fetch('http://localhost:8080/api/todos', {
@@ -114,7 +119,7 @@ async function submitForm() {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
-    body: { added_todos, deleted_todos },
+    body: { added_todos, updated_todos, deleted_todos },
     async onResponse({ response }) {
       addedTodos.value = []
       deletedTodos.value = []
