@@ -23,4 +23,11 @@ const get_user = async (req, res, next) => {
   res.status(200).json(user)
 }
 
-module.exports = { update_image, get_user }
+const get_userFriends = async (req, res, next) => {
+  const user_id = req.params.user_id
+  const { friends } = await User.findById(user_id).populate('friends')
+  
+  res.status(200).json(friends)
+}
+
+module.exports = { update_image, get_user, get_userFriends }

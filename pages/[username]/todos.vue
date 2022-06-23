@@ -36,7 +36,7 @@ const { data, refresh } = await useAsyncData<Todo[]>('todos', () => {
     }
   })
 })
-
+console.log(useRouter())
 let addedTodos = ref<Todo[]>([])
 const todos = computed(() => {
   return data.value.map(el => {

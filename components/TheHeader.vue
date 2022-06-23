@@ -119,7 +119,7 @@ function logout() {
   useCookie('user_id').value = ''
   set_show_logout(false)
   reset_user()
-  navigateTo('/auth/login')
+  window.location.href = '/auth/login'
 }
 </script>
 

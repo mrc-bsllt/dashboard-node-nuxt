@@ -22,6 +22,10 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Todo'
   }],
+  friends: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   created_at: { type: Date },
   updated_at: { type: Date }
 })

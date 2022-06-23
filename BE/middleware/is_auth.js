@@ -3,7 +3,6 @@ const jsonToken = require('jsonwebtoken')
 module.exports = (req, res, next) => {
   // Prendo il token dai cookie (che il FE dovrebbe aver salvato)
   const token = req.get('Authorization').split(' ')[1]
-
   // Provo a decodificare il token per controlalre che esista
   let decodedToken = null
   try {
