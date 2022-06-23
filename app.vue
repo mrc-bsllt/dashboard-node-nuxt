@@ -4,7 +4,9 @@ div#app(class="w-full h-screen overflow-hidden bg-grey")
   main#app-main(class="relative flex flex-row justify-start items-stretch flex-nowrap text-black" :style="{ height }")
     the-aside(ref="aside" class="absolute top-0 left-0")
     nuxt-page(class="p-5 sm:p-10" :style="{ width, marginLeft }")
-    span(class="clock fixed bottom-[20px] right-[20px] text-22 italic") {{ clock }}
+    client-only
+      span(class="clock fixed bottom-[20px] right-[20px] text-22 italic") 
+        | {{ clock }}
 </template>
 
 <script setup lang="ts">

@@ -1,7 +1,8 @@
 <template lang="pug">
 main.relative
   h1 BENTORNATO 
-    span(class="underline italic") {{ get_user.username }}
+    span(class="underline italic") 
+      | {{ get_user.username }}
   section(v-if="geolocation" class="mt-20")
     h2 {{ geolocation.city }} - {{ new Date().toLocaleDateString() }}
     section(class="flex flex-row justify-start items-center flex-nowrap mt-10")
