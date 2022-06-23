@@ -3,7 +3,7 @@ main.relative
   h1 BENTORNATO 
     span(class="underline italic") 
       | {{ get_user.username }}
-  section(v-if="geolocation" class="mt-20")
+  section(v-if="geolocation" class="transition-enter mt-20")
     h2 {{ geolocation.city }} - {{ new Date().toLocaleDateString() }}
     section(class="flex flex-row justify-start items-center flex-nowrap mt-10")
       div(class="weather__wrapper flex flex-row justify-start items-center flex-nowrap mr-20")
@@ -12,7 +12,7 @@ main.relative
       div(class="temp__wrapper flex flex-row justify-start items-center flex-nowrap")
         img(src="@/assets/svg/thermometer.svg" alt="thermometer-icon" width="100" height="100" class="max-w-[100px] max-h-[100px] mr-10")
         p(class="text-40 font-semibold") {{ geolocation.temperature }} °C
-  section(v-else-if="error_geolocation" class="h-[90%] flex flex-col justify-center items-center flex-nowrap")
+  section(v-else-if="error_geolocation" class="h-[90%] flex flex-col justify-center items-center flex-nowrap transition-enter")
     img(src="@/assets/svg/sad.svg" alt="sad-icon" width="200" height="200")
     div(class="text-22")
       span Sorry! We could not geolocate you, please 

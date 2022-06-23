@@ -10,7 +10,7 @@ main(id="todos" class="relative")
           class="todo flex flex-row justify-start items-center flex-nowrap" 
           :class="{ 'mt-5': index > 0 }, { 'opacity-todo': deletedTodos.includes(index) }, { 'transition-enter': index > data.values.length - 1 }")
           label(:for="'todo-' + index" class="relative w-[15px] h-[15px] mr-3")
-            input(type="checkbox" :id="'todo-' + index" class="todo-checkbox hidden" :value="todo.done" v-model="todo.done" @input="($event) => updateTodo($event, index, true)")
+            input(type="checkbox" :id="'todo-' + index" class="todo-checkbox hidden" :value="todo.done" @change="($event) => updateTodo($event, index, true)")
             div(class="fake-checkbox absolute top-1/2 left-0 -translate-y-1/2 w-full h-full border border-solid border-black bg-none bg-center bg-contain")
           input(type="text" 
                 :value="todo.content" 
@@ -19,7 +19,6 @@ main(id="todos" class="relative")
                 @input="($event) => updateTodo($event, index)")
           img(v-if="!deletedTodos.includes(index)" src="@/assets/svg/basket.svg" alt="basket-icon" width="20" height="20" class="mx-2 cursor-pointer" @click="deleteTodo(index)")
           img(v-else src="@/assets/svg/restore.svg" alt="restore-icon" width="20" height="20" class="mx-2 cursor-pointer" @click="restoreTodo(index)")
-      
       button(type="submit" 
             class="btn btn-confirm absolute top-[20px] right-[20px]" 
             :disabled="!updatedTodos.content.length && !updatedTodos.done.length && !deletedTodos.length && !addedTodos.length")
@@ -58,17 +57,13 @@ watch(() => addedTodos.value.length, () => {
 let updatedTodos = ref<UpdatedTodos>({ content: [], done: [] })
 let deletedTodos = ref<number[]>([])
 
-const done = computed(() => allTodos.value.map(todo => todo.done))
-watch(() => done, (newValue) => {
-  console.log(newValue)
-}, { deep: true })
-
 function updateTodo(event: Event, index: number, isCheckbox: boolean = false): void {
-  const value = (event.target as HTMLInputElement).value
-
-  if(!isCheckbox) {
-    allTodos.value[index].content = value
+  const suffix = !isCheckbox ? 'value' : 'checked'
+  const value = (event.target as HTMLInputElement)[suffix]
   
+  if(!isCheckbox) {
+    allTodos.value[index].content = value as string
+
     if(!updatedTodos.value.content.includes(index)) {
       updatedTodos.value.content.push(index)
     }
@@ -79,6 +74,8 @@ function updateTodo(event: Event, index: number, isCheckbox: boolean = false): v
       }
     }
   } else {
+    allTodos.value[index].done = value as boolean
+
     if(!updatedTodos.value.done.includes(index)) {
       updatedTodos.value.done.push(index)
     } else {
