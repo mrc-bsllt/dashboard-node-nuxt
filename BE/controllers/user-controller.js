@@ -30,4 +30,12 @@ const get_userFriends = async (req, res, next) => {
   res.status(200).json(friends)
 }
 
-module.exports = { update_image, get_user, get_userFriends }
+const get_user_by_username = async (req, res, next) => {
+  const { user_username } = req.params
+  const regex = new RegExp("^" + user_username)
+  
+  const users = ( await User.find({ username: regex }) ).filter(user => user._id.toString() !== req.user_id)
+  res.status(200).json(users)
+}
+
+module.exports = { update_image, get_user, get_userFriends, get_user_by_username }
