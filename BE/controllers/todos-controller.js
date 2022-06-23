@@ -32,6 +32,26 @@ const add_todos = async (req, res, next) => {
   next()
 }
 
+const update_todos = async (req, res, next) => {
+  const { updated_todos } = req.body
+
+  if(updated_todos.length) {
+    await Promise.all(updated_todos.map(async todo_to_update => {
+      const todo = await Todo.findById(todo_to_update._id)
+      todo.content = todo_to_update.content
+      todo.done = todo_to_update.done
+      todo.updated_at = new Date()
+      await todo.save()
+    }))
+
+    responses.push({ message: 'Todos updated' })
+  } else {
+    responses.push({ message: 'Nothing to update' })
+  }
+
+  next()
+}
+
 const delete_todos = async (req, res, next) => {
   const user_id = req.user_id
   const { deleted_todos } = req.body
@@ -49,4 +69,4 @@ const delete_todos = async (req, res, next) => {
   res.status(201).json(responses)
 }
 
-module.exports = { add_todos, get_todos, delete_todos }
+module.exports = { add_todos, get_todos, update_todos, delete_todos }

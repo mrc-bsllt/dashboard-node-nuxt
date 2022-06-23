@@ -110,7 +110,7 @@ async function submitForm() {
 
   const update_indexes = [ ...new Set(updatedTodos.value.content.concat(updatedTodos.value.done)) ]
   const filtered_update_indexes = update_indexes.filter(i => i <= data.value.length - 1)
-  const updated_todos = allTodos.value.filter((todo, index) => filtered_update_indexes.includes(index))
+  const updated_todos = allTodos.value.filter((todo, index) => filtered_update_indexes.includes(index) && !deletedTodos.value.includes(index))
   
   const deleted_todos = data.value.filter((todo, index) => deletedTodos.value.includes(index))
   
