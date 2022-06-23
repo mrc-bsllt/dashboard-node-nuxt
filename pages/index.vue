@@ -17,15 +17,17 @@ main.relative
     div(class="text-22")
       span Sorry! We could not geolocate you, please 
       button(class="font-semibold uppercase" @click="getGeolocation") try again!
-  loader(v-else class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2")
+  hollow-dots-spinner(v-else 
+                      :animation-duration="800" 
+                      :dot-size="30" 
+                      :dots-num="3" 
+                      color="#303030" 
+                      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2")
 </template>
 
 <script setup lang="ts">
-import Loader from '@/components/commons/Loader.vue'
+import { HollowDotsSpinner } from 'epic-spinners'
 import { useUser } from '@/store/user'
-defineNuxtComponent({
-  Loader
-})
 
 const { get_user } = toRefs(useUser())
 
