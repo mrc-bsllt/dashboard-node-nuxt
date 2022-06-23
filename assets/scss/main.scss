@@ -41,3 +41,22 @@ svg {
 .slide-down-enter-from, .slide-down-leave-to {
   transform: translateY(-100%);
 }
+
+.transition-enter {
+  animation-name: transition-enter;
+  animation-duration: 0.6s;
+  animation-timing-function: linear;
+}
+@keyframes transition-enter {
+  0% {
+    transform: translateY(30%);
+    opacity: 0;
+  }
+  95% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
