@@ -1,5 +1,5 @@
 <template lang="pug">
-main(class="relative")
+main(class="relative" @click.self="showList = false")
   h3(class="text-22 font-semibold uppercase") 
     | Amici ({{ friends.length }})
   div(class="search__wrapper relative mt-10")
