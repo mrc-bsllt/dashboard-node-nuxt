@@ -44,5 +44,10 @@ app.use('/api', userRoutes)
 app.use('/api', todosRoutes)
 
 mongoose.connect(process.env.MONGODB_URI).then(() => {
-  app.listen(8080)
+  const server = app.listen(8080)
+  const socket_io = require('./socket').init(server)
+  
+  socket_io.on('connection', socket => {
+    console.log('Client connected!')
+  })
 }).catch(error => console.log(error))
