@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const deleteImage = require('../utils/delete-image')
+const io = require('../socket')
 
 const update_image = async (req, res, next) => {
   const user_id = req.params.user_id
@@ -49,6 +50,7 @@ const send_friend_request = async (req, res, next) => {
   friend.requests_received.push(user_id)
   
   await Promise.all([user.save(), friend.save()])
+  io.getIO().emit('requests', { action: 'send', user, friend_id })
 
   res.status(201).json({ message: "request sent!" })
 }

@@ -22,6 +22,9 @@ export const useUser = defineStore('user', {
       }
       this.user.requests_received = user.requests_received
     },
+    add_request(user: User): void {
+      this.user.requests_received?.push(user)
+    },
     reset_user(): void {
       this.user.username = ''
       this.user.image_path = '../assets/svg/user.svg'

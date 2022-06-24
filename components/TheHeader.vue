@@ -15,7 +15,7 @@ section(class="section-header relative")
         li.notification.relative.px-2
           button
             img(src="@/assets/svg/notification.svg" alt="notification-icon" width="30" height="30")
-          div(v-if="get_user.requests_received?.length" class="notification__counter absolute -top-[10px] right-0 w-[20px] h-[20px] text-white text-8 text-center leading-[20px] font-semibold bg-error rounded-[50%]")
+          div(v-if="get_user.requests_received?.length" class="notification__counter absolute -top-[10px] right-0 w-[20px] h-[20px] text-white text-8 text-center leading-[20px] font-semibold bg-error rounded-[50%] animate-bounce")
             | {{ get_user.requests_received.length }}
         li.px-2.flex.flex-row.justify-center.items-center.flex-nowrap
           label(for="image-upload" class="flex flex-row justify-center items-center flex-nowrap relative w-[60px] h-[60px] rounded-[50%] bg-grey cursor-pointer overflow-hidden")
@@ -50,7 +50,7 @@ defineNuxtComponent({
 })
 
 const { get_user } = toRefs(useUser())
-const { reset_user, toggle_refresh_data } = useUser()
+const { reset_user, toggle_refresh_data, add_request } = useUser()
 
 const { get_show_logout } = toRefs(useHeader())
 const { set_show_logout } = useHeader()
@@ -130,5 +130,14 @@ function logout() {
 
 onMounted(() => {
   const socket = openSocket('http://localhost:8080')
+    socket.on('requests', data => {
+    if(data.action === 'send') {
+      const { friend_id, user } = data
+      const user_id = useCookie('user_id').value
+      if(friend_id === user_id) {
+        add_request(user)
+      }
+    }
+  })
 })
 </script>
