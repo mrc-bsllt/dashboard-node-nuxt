@@ -18,7 +18,7 @@ const update_image = async (req, res, next) => {
 
 const get_user = async (req, res, next) => {
   const user_id = req.params.user_id
-  const user = await User.findById(user_id)
+  const user = await User.findById(user_id).populate('requests_received')
 
   res.status(200).json(user)
 }

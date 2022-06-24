@@ -12,6 +12,11 @@ section(class="section-header relative")
           nuxt-link(to="/auth/signup" class="text-grey")
             | Signup 
       template(v-else)
+        li.notification.relative.px-2
+          button
+            img(src="@/assets/svg/notification.svg" alt="notification-icon" width="30" height="30")
+          div(v-if="get_user.requests_received?.length" class="notification__counter absolute -top-[10px] right-0 w-[20px] h-[20px] text-white text-8 text-center leading-[20px] font-semibold bg-error rounded-[50%]")
+            | {{ get_user.requests_received.length }}
         li.px-2.flex.flex-row.justify-center.items-center.flex-nowrap
           label(for="image-upload" class="flex flex-row justify-center items-center flex-nowrap relative w-[60px] h-[60px] rounded-[50%] bg-grey cursor-pointer overflow-hidden")
             img(v-if="!updated_url" 

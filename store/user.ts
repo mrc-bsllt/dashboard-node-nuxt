@@ -9,7 +9,8 @@ export const useUser = defineStore('user', {
   state: (): UserState => ({
     user: {
       username: '',
-      image_path: '../assets/svg/user.svg'
+      image_path: '../assets/svg/user.svg',
+      requests_received: []
     },
     refresh_data: false
   }),
@@ -19,10 +20,12 @@ export const useUser = defineStore('user', {
       if(user.image_path) {
         this.user.image_path = 'http://localhost:8080' + user.image_path
       }
+      this.user.requests_received = user.requests_received
     },
     reset_user(): void {
       this.user.username = ''
       this.user.image_path = '../assets/svg/user.svg'
+      this.user.requests_received = []
     },
     toggle_refresh_data(): void {
       this.refresh_data = true
