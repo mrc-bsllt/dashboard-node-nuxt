@@ -122,9 +122,3 @@ function logout() {
   window.location.href = '/auth/login'
 }
 </script>
-
-<style scoped lang="scss">
-.cover_image {
-  @apply absolute top-0 left-0 w-full h-full object-center object-cover;
-}
-</style>
