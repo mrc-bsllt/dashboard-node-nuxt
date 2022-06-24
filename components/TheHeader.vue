@@ -41,6 +41,7 @@ section(class="section-header relative")
 </template>
 
 <script setup lang="ts">
+import openSocket from 'socket.io-client'
 import { useHeader } from '@/store/header'
 import Icon from '@/components/commons/Icon.vue'
 import { useUser } from '@/store/user'
@@ -126,4 +127,8 @@ function logout() {
   reset_user()
   window.location.href = '/auth/login'
 }
+
+onMounted(() => {
+  const socket = openSocket('http://localhost:8080')
+})
 </script>
