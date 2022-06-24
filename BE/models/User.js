@@ -20,11 +20,23 @@ const userSchema = new Schema({
   },
   todos: [{
     type: Schema.Types.ObjectId,
-    ref: 'Todo'
+    ref: 'Todo',
+    default: []
   }],
   friends: [{
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    default: []
+  }],
+  requests_sent: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
+  }],
+  requests_received: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
   }],
   created_at: { type: Date },
   updated_at: { type: Date }

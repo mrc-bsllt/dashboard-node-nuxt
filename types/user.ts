@@ -19,3 +19,9 @@ export interface ErrorInput {
   param: string
   msg: string
 }
+
+export interface Community {
+  friends: User[]
+  requests_sent: User[]
+  requests_received: User[]
+}
