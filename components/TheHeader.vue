@@ -13,7 +13,7 @@ section(class="section-header relative")
             | Signup 
       template(v-else)
         li.notification.relative.px-2
-          button
+          button(@click="toggleNotification")
             img(src="@/assets/svg/notification.svg" alt="notification-icon" width="30" height="30")
           div(v-if="get_user.requests_received?.length" class="notification__counter absolute -top-[10px] right-0 w-[20px] h-[20px] text-white text-8 text-center leading-[20px] font-semibold bg-error rounded-[50%] animate-bounce")
             | {{ get_user.requests_received.length }}
@@ -32,9 +32,22 @@ section(class="section-header relative")
             | logout 
   transition(name="slide-down" mode="out-in")
     div(v-if="show_banner" 
-        class="box absolute top-full right-0 flex flex-row justify-center items-center flex-nowrap min-w-[400px] px-20 py-10 rounded-bl-[10px] z-40" 
-        :class="error_banner ? 'bg-error' : 'bg-black'")
-      p(v-if="error_banner" class="text-white text-16 font-semibold uppercase") Image must be png, jpg, jpeg or webp!
+        class="box absolute top-full right-0 flex flex-row items-center flex-nowrap min-w-[400px] py-10 rounded-bl-[10px] z-40 overflow-hidden" 
+        :class="[error_banner ? 'bg-error' : 'bg-black', is_notification ? 'justify-start px-10' : 'justify-center px-20']")
+      //- lista delle notifiche
+      ul(v-if="is_notification && get_user.requests_received?.length")
+        li(v-for="(user, index) in get_user.requests_received" 
+          :key="index" 
+          :class="{ 'border-b border-solid border-grey pb-5 mb-5': index < get_user.requests_received.length - 1 }")
+          avatar(:user="user" :label="user.username + ' ti ha inviato una richiesta di amicizia'")
+          div(class="buttons__wrapper mt-3")
+            button(class="btn btn-confirm mr-3")
+              | Accetta
+            button(class="btn btn-cancellation" @click="rejectFriendship(user._id || '', toggle_refresh_data)")
+              | Rifiuta
+      //- Messaggio errore nel caricamento dell'immagine
+      p(v-else-if="error_banner" class="text-white text-16 font-semibold uppercase") Image must be png, jpg, jpeg or webp!
+      //- Caricare l'immagine nuova
       template(v-else)
         button(class="btn btn-confirm mx-3" @click="updateImage") Save
         button(class="btn btn-cancellation mx-3" @click="clearInput") Cancel
@@ -44,9 +57,12 @@ section(class="section-header relative")
 import openSocket from 'socket.io-client'
 import { useHeader } from '@/store/header'
 import Icon from '@/components/commons/Icon.vue'
+import Avatar from '@/components/commons/Avatar.vue'
 import { useUser } from '@/store/user'
+import { rejectFriendship } from '@/composables/friendship'
 defineNuxtComponent({
-  Icon
+  Icon,
+  Avatar
 })
 
 const { get_user } = toRefs(useUser())
@@ -57,6 +73,7 @@ const { set_show_logout } = useHeader()
 
 const show_banner = ref<boolean>(false)
 const error_banner = ref<boolean>(false)
+const is_notification = ref<boolean>(false)
 const types_accepted = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']
 const updated_url = ref<string | null>(null)
 
@@ -128,6 +145,20 @@ function logout() {
   window.location.href = '/auth/login'
 }
 
+function toggleNotification() {
+  if(get_user.value.requests_received?.length) {
+    show_banner.value = !show_banner.value
+    is_notification.value = !is_notification.value
+  }
+}
+watch(() => get_user.value.requests_received?.length, () => {
+  show_banner.value = true
+  is_notification.value = true
+  setTimeout(() => {
+    show_banner.value = false
+    is_notification.value = false
+  }, 3000)
+})
 onMounted(() => {
   const socket = openSocket('http://localhost:8080')
     socket.on('requests', data => {

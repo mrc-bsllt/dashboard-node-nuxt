@@ -19,17 +19,14 @@ main(class="relative" @click.self="showList = false")
                               class="inline-block")
         ul(v-else class="users__list px-3")
           li(v-for="(user, index) in searchResults" :key="index" class="flex flex-row justify-between items-center flex-nowrap my-3")
-            section(class="left flex flex-row justify-start items-center flex-nowrap")
-              div(class="image__wrapper relative w-[50px] h-[50px] mr-3 rounded-[50%] bg-grey overflow-hidden" 
-                  :class="{ 'flex flex-row justify-center items-center flex-nowrap': !user.image_path }")
-                img(:src="user.image_path || '../../../assets/svg/user.svg'" :class="{ 'cover_image': user.image_path }")
-              span(class="text-18 text-grey")
-                | {{ user.username }}
+            avatar(:user="user" :label="user.username")
             button(class="btn btn-confirm ml-5" 
                   :class="checkUsers(user._id || '').status === 'friend' ? 'btn-cancellation' : 'btn-confirm'" 
                   :disabled="checkUsers(user._id || '').status === 'sent'"
                   @click="sendFriendRequest(user._id || '')")
               | {{ checkUsers(user._id || '').label }}
+            button(v-if="checkUsers(user._id || '').status === 'received'" class="btn btn-cancellation ml-3")
+              | Rimuovi
   section(class="friends__wrapper")
     div(v-if="!friends.length" class="no-friends__wrapper absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2")
       img(src="@/assets/svg/sad.svg" alt="sad-icon" width="200" height="200" class="inline-block transition-enter")
@@ -38,6 +35,10 @@ main(class="relative" @click.self="showList = false")
 <script setup lang="ts">
 import { HollowDotsSpinner } from 'epic-spinners'
 import type { User, Community } from '@/types/user'
+import Avatar from '@/components/commons/Avatar.vue'
+defineNuxtComponent({
+  Avatar
+})
 
 const { data, refresh } = await useAsyncData<Community>('community', () => {
   const user_id = useCookie('user_id').value
