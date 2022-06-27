@@ -30,6 +30,12 @@ main(class="relative" @click.self="showList = false")
   section(class="friends__wrapper")
     div(v-if="!friends.length" class="no-friends__wrapper absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2")
       img(src="@/assets/svg/sad.svg" alt="sad-icon" width="200" height="200" class="inline-block transition-enter")
+    div(v-else class="mt-10")
+    h3
+     | Lista di Amici
+    ul(class="mt-3")
+      li(v-for="(user, index) in friends" :key="index")
+        avatar(:user="user" :label="user.username" classes="text-black")
 </template>
 
 <script setup lang="ts">
