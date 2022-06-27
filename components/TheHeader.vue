@@ -41,7 +41,7 @@ section(class="section-header relative")
           :class="{ 'border-b border-solid border-grey pb-5 mb-5': index < get_user.requests_received.length - 1 }")
           avatar(:user="user" :label="user.username + ' ti ha inviato una richiesta di amicizia'")
           div(class="buttons__wrapper mt-3")
-            button(class="btn btn-confirm mr-3")
+            button(class="btn btn-confirm mr-3" @click="acceptFriendship(user._id || '', toggle_refresh_data)")
               | Accetta
             button(class="btn btn-cancellation" @click="rejectFriendship(user._id || '', toggle_refresh_data)")
               | Rifiuta
@@ -59,7 +59,7 @@ import { useHeader } from '@/store/header'
 import Icon from '@/components/commons/Icon.vue'
 import Avatar from '@/components/commons/Avatar.vue'
 import { useUser } from '@/store/user'
-import { rejectFriendship } from '@/composables/friendship'
+import { rejectFriendship, acceptFriendship } from '@/composables/friendship'
 defineNuxtComponent({
   Icon,
   Avatar

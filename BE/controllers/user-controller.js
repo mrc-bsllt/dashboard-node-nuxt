@@ -68,4 +68,19 @@ const reject_friendship = async (req, res, next) => {
   res.status(201).json({ message: 'Reject friendship' })
 }
 
-module.exports = { update_image, get_user, get_userCommunity, get_user_by_username, send_friend_request, reject_friendship }
+const accept_friendship = async (req, res, next) => {
+  const user_id = req.user_id
+  const { friend_id } = req.body
+  const [ user, friend ] = await Promise.all([User.findById(user_id), User.findById(friend_id)])
+
+  user.requests_received = user.requests_received.filter(id => id.toString() !== friend_id)
+  user.friends.push(friend_id)
+  friend.requests_sent = friend.requests_sent.filter(id => id.toString() !== user_id)
+  friend.friends.push(user_id)
+
+  await Promise.all([user.save(), friend.save()])
+
+  res.status(201).json({ message: 'Add friendship' })
+}
+
+module.exports = { update_image, get_user, get_userCommunity, get_user_by_username, send_friend_request, reject_friendship, accept_friendship }
