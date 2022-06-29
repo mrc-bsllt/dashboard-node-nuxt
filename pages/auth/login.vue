@@ -76,8 +76,8 @@ async function submittingLogin() {
         })
       } else {
         const { token, user_id } = response._data
-        useCookie('token').value = token
-        useCookie('user_id').value = user_id
+        useCookie('token', { maxAge: 60 * 60 * 4 }).value = token
+        useCookie('user_id', { maxAge: 60 * 60 * 4 }).value = user_id
         set_show_logout(true)
         navigateTo('/')
       }
